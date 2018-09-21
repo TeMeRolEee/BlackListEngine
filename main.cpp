@@ -3,6 +3,10 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QCommandLineParser>
 
+#include <QDebug>
+
+#include "engine.h"
+
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("En_Decoder");
@@ -19,22 +23,50 @@ int main(int argc, char *argv[]) {
     QCommandLineOption scanOption(QStringList() << "s" << "scan",
                                   "Hashes the given file (MD5, SHA1, SHA256) and searches"
                                   "for the result in the database. If there is a match: Result:Blocked,"
-                                  "otherwise Result: No threat detected.");
+                                  "otherwise Result: No threat detected.", "scan");
+    parser.addOption(scanOption);
 
     QCommandLineOption lookupOption(QStringList() << "l" << "lookup",
                                     "Searches for results via the given hash (MD5, SHA1, SHA256) in the database. "
-                                    "Same result as the scan mode.");
+                                    "Same result as the scan mode.", "lookup");
+    parser.addOption(lookupOption);
 
     QCommandLineOption generateOption(QStringList() << "g" << "generate",
                                       "Generates a hashes from the given file.\n"
                                       "MD5: <MD5_hash_of_file>\n"
                                       "SHA1: <SHA1_hash_of_file>\n"
-                                      "SHA256: <SHA256_hash_of_file>");
+                                      "SHA256: <SHA256_hash_of_file>", "generate");
+    parser.addOption(generateOption);
 
     QCommandLineOption folderOption(QStringList() << "f" << "folder",
-                                    "Iterates through the given folder non-recursively and scans them.");
+                                    "Iterates through the given folder non-recursively and scans them.", "folder");
+    parser.addOption(folderOption);
 
     parser.process(app);
+
+    /*
+    Engine engine;
+
+    QStringList qStringList = engine.hashFile(parser.value(scanOption));
+
+    std::cout << "MD5:\t" << qStringList.at(0).toStdString() << std::endl
+    << "SHA1:\t" << qStringList.at(1).toStdString() << std::endl
+    << "SHA256:\t" << qStringList.at(2).toStdString() << std::endl;
+    */
+
+    if (parser.isSet(scanOption)) {
+
+        return 0;
+    } else if (parser.isSet(lookupOption)) {
+
+        return 0;
+    } else if (parser.isSet(generateOption)) {
+
+        return 0;
+    } else if (parser.isSet(folderOption)) {
+
+        return 0;
+    }
 
     parser.showHelp();
 }
