@@ -28,5 +28,5 @@ QStringList Engine::hashFile(const QString &filePath) {
 
         return qStringList;
     }
-    return  QStringList();
+    return QStringList();
 }

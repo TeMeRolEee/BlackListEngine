@@ -46,23 +46,13 @@ int main(int argc, char *argv[]) {
 
     parser.process(app);
 
-    /*
-    Engine engine;
-
-    QStringList qStringList = engine.hashFile(parser.value(scanOption));
-
-    std::cout << "MD5:\t" << qStringList.at(0).toStdString() << std::endl
-    << "SHA1:\t" << qStringList.at(1).toStdString() << std::endl
-    << "SHA256:\t" << qStringList.at(2).toStdString() << std::endl;
-    */
-
     auto core = std::make_unique<Core>();
 
     if (parser.isSet(scanOption)) {
-
+        core->scanFile(parser.value(scanOption));
         return 0;
     } else if (parser.isSet(lookupOption)) {
-
+        core->lookUp(parser.value(lookupOption));
         return 0;
     } else if (parser.isSet(generateOption)) {
         core->generateHashes(parser.value(generateOption));
