@@ -4,7 +4,8 @@
 class DBManager {
 public:
     DBManager(const QString &path);
-    bool addHash(const QString)
+    bool findHashInDB(const QStringList &hashes);
+    bool findHashInDB(const QString &hash);
 
 private:
     QSqlDatabase qSqlDatabase;
