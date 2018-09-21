@@ -4,8 +4,10 @@
 #include <QtCore/QCommandLineParser>
 
 #include <QDebug>
+#include <memory>
 
 #include "engine.h"
+#include "core.h"
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
@@ -54,6 +56,8 @@ int main(int argc, char *argv[]) {
     << "SHA256:\t" << qStringList.at(2).toStdString() << std::endl;
     */
 
+    auto core = std::make_unique<Core>();
+
     if (parser.isSet(scanOption)) {
 
         return 0;
@@ -61,10 +65,10 @@ int main(int argc, char *argv[]) {
 
         return 0;
     } else if (parser.isSet(generateOption)) {
-
+        core->generateHashes(parser.value(generateOption));
         return 0;
     } else if (parser.isSet(folderOption)) {
-
+        core->folderScanner(parser.value(folderOption));
         return 0;
     }
 
