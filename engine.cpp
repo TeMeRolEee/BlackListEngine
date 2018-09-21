@@ -10,9 +10,7 @@ QStringList Engine::hashFile(const QString &filePath) {
     QStringList qStringList;
     QFile qFile(filePath);
 
-    if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Couldn't open the file";
-    } else {
+    if (qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QCryptographicHash md5Hash(QCryptographicHash::Algorithm::Md5);
         md5Hash.addData(qFile.readAll());
 

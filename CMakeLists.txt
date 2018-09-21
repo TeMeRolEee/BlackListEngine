@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Core HINTS ~/Qt/5.11.1/gcc_64/)
 
-add_executable(BlackListEngine main.cpp iohandler.cpp iohandler.h engine.cpp engine.h)
+add_executable(BlackListEngine main.cpp iohandler.cpp iohandler.h engine.cpp engine.h core.cpp core.h utils.cpp utils.h)
 
 # linking
 target_link_libraries(BlackListEngine Qt5::Core Qt5::Core)
