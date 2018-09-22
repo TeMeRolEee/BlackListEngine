@@ -11,8 +11,8 @@
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("En_Decoder");
-    QCoreApplication::setApplicationVersion("0.9.5");
+    QCoreApplication::setApplicationName("BlackListEngine");
+    QCoreApplication::setApplicationVersion("1.0");
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Encodes and decodes text via a given dictionary");
