@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationVersion("1.0");
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Encodes and decodes text via a given dictionary");
+    parser.setApplicationDescription("Hashes the given files or directory");
     parser.addHelpOption();
     parser.addVersionOption();
 
