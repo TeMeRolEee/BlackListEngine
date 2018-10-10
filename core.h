@@ -13,15 +13,13 @@ public:
 
     ~Core();
 
-    QStringList getHashes(const QString &filePath);
+    int generateHashes(const QString &filePath);
 
-    void generateHashes(const QString &filePath);
+    int folderScanner(const QString &directoryPath);
 
-    void folderScanner(const QString &directoryPath);
+    int lookUp(const QString &inputHash);
 
-    void lookUp(const QString &inputHash);
-
-    void scanFile(const QString &filePath);
+    int scanFile(const QString &filePath);
 
 private:
     Engine *engine;

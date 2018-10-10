@@ -2,6 +2,7 @@
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QVector>
+#include <QtCore/QFileInfo>
 
 #include "core.h"
 
@@ -19,51 +20,70 @@ Core::~Core() {
     delete dbManager;
 }
 
-QStringList Core::getHashes(const QString &filePath) {
-
+int Core::generateHashes(const QString &filePath) {
     QStringList hashes = engine->hashFile(filePath);
-
     if (!hashes.isEmpty()) {
-        return hashes;
+        utils->printHashes(hashes);
+        return 0;
     }
-
-    return QStringList();
+    return 1;
 }
 
-void Core::generateHashes(const QString &filePath) {
-    QStringList hashes = getHashes(filePath);
-    utils->printHashes(hashes);
-}
-
-void Core::folderScanner(const QString &directoryPath) {
+int Core::folderScanner(const QString &directoryPath) {
     QDirIterator directoryIterator(directoryPath);
-    QVector<QStringList> hashes;
+    QMap<QString, QStringList> hashesArray;
+
+    if (!directoryIterator.hasNext()) {
+        qDebug() << "No files in the directory to hash!";
+        return 1;
+    }
 
     while (directoryIterator.hasNext()) {
-        hashes.append(getHashes(directoryIterator.next()));
+        directoryIterator.next();
+        if (QFileInfo(directoryIterator.filePath()).isFile()){
+            hashesArray.insert(directoryIterator.fileName(), engine->hashFile(directoryIterator.filePath()));
+        }
     }
 
-    for (auto hash : hashes) {
-        dbManager->findHashInDB(hash);
+    for (const auto &fileHashes : hashesArray) {
+        if (!fileHashes.isEmpty() && dbManager->findHashesInDB(fileHashes)) {
+            std::cout << "\t" << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: Blocked" << std::endl;
+        } else {
+            std::cout << "\t" << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: No threat detected" << std::endl;
+        }
     }
+
+    return 0;
 }
 
-void Core::lookUp(const QString &inputHash) {
+int Core::lookUp(const QString &inputHash) {
+    if (inputHash.isEmpty()) {
+        return 1;
+    }
+
     if (dbManager->findHashInDB(inputHash)) {
         std::cout << "Result: Blocked" << std::endl;
     } else {
         std::cout << "Result: No threat detected" << std::endl;
     }
+
+    return 0;
 }
 
-void Core::scanFile(const QString &filepath) {
-    QStringList hashes = getHashes(filepath);
+int Core::scanFile(const QString &filepath) {
+    QStringList hashes = engine->hashFile(filepath);
 
-    if (dbManager->findHashInDB(hashes)) {
+    if (hashes.isEmpty()) {
+        return 1;
+    }
+
+    if (dbManager->findHashesInDB(hashes)) {
         std::cout << "Result: Blocked" << std::endl;
     } else {
         std::cout << "Result: No threat detected" << std::endl;
     }
+
+    return 0;
 }
 
 

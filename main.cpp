@@ -49,17 +49,13 @@ int main(int argc, char *argv[]) {
     auto core = std::make_unique<Core>();
 
     if (parser.isSet(scanOption)) {
-        core->scanFile(parser.value(scanOption));
-        return 0;
+        return core->scanFile(parser.value(scanOption));
     } else if (parser.isSet(lookupOption)) {
-        core->lookUp(parser.value(lookupOption));
-        return 0;
+        return core->lookUp(parser.value(lookupOption));
     } else if (parser.isSet(generateOption)) {
-        core->generateHashes(parser.value(generateOption));
-        return 0;
+        return core->generateHashes(parser.value(generateOption));
     } else if (parser.isSet(folderOption)) {
-        core->folderScanner(parser.value(folderOption));
-        return 0;
+        return core->folderScanner(parser.value(folderOption));
     }
 
     parser.showHelp();

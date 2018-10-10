@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core HINTS ~/Qt/5.11.1/gcc_64/)
 find_package(Qt5Sql HINTS ~/Qt/5.11.1/gcc_64)
 
-add_executable(BlackListEngine main.cpp iohandler.cpp engine.cpp core.cpp utils.cpp dbmanager.cpp dbmanager.h)
+add_executable(BlackListEngine main.cpp engine.cpp core.cpp utils.cpp dbmanager.cpp)
 
 # linking
 target_link_libraries(BlackListEngine Qt5::Core Qt5::Sql)

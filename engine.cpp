@@ -3,30 +3,35 @@
 #include <QtCore/QFile>
 
 #include <QDebug>
+#include <QtCore/QFileInfo>
 
 #include "engine.h"
 
 QStringList Engine::hashFile(const QString &filePath) {
-    QStringList qStringList;
+    QStringList hashes;
     QFile qFile(filePath);
 
     if (qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QCryptographicHash md5Hash(QCryptographicHash::Algorithm::Md5);
-        md5Hash.addData(qFile.readAll());
-
-        QCryptographicHash sha1Hash(QCryptographicHash::Algorithm::Sha1);
-        sha1Hash.addData(qFile.readAll());
-
-        QCryptographicHash sha256Hash(QCryptographicHash::Algorithm::Sha256);
-        sha256Hash.addData(qFile.readAll());
-
+        QByteArray fileContent = qFile.readAll();
         qFile.close();
 
-        qStringList.append(md5Hash.result().toHex());
-        qStringList.append(sha1Hash.result().toHex());
-        qStringList.append(sha256Hash.result().toHex());
+        QCryptographicHash md5Hash(QCryptographicHash::Algorithm::Md5);
+        md5Hash.addData(fileContent);
 
-        return qStringList;
+        QCryptographicHash sha1Hash(QCryptographicHash::Algorithm::Sha1);
+        sha1Hash.addData(fileContent);
+
+        QCryptographicHash sha256Hash(QCryptographicHash::Algorithm::Sha256);
+        sha256Hash.addData(fileContent);
+
+        hashes.append(md5Hash.result().toHex());
+        hashes.append(sha1Hash.result().toHex());
+        hashes.append(sha256Hash.result().toHex());
+
+        return hashes;
     }
+
+    qDebug() << "Error, couldn't hash the file, probably not exists or don't have permission to read it!";
+
     return QStringList();
 }

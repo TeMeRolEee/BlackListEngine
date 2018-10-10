@@ -11,7 +11,7 @@ DBManager::DBManager(const QString &path) {
     }
 }
 
-bool DBManager::findHashInDB(const QStringList &hashes) {
+bool DBManager::findHashesInDB(const QStringList &hashes) {
     QSqlQuery qSqlQuery;
     qSqlQuery.prepare(
             "SELECT MD5, SHA1, SHA256 FROM hashTable WHERE MD5 = (:MD5) OR SHA1 = (:SHA1) OR SHA256 = (:SHA256)");
