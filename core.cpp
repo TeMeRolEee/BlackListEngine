@@ -47,9 +47,9 @@ int Core::folderScanner(const QString &directoryPath) {
 
     for (const auto &fileHashes : hashesArray) {
         if (!fileHashes.isEmpty() && dbManager->findHashesInDB(fileHashes)) {
-            std::cout << "\t" << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: Blocked" << std::endl;
+            std::cout << "\t Filename: " << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: Blocked" << std::endl;
         } else {
-            std::cout << "\t" << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: No threat detected" << std::endl;
+            std::cout << "\t Filename: " << hashesArray.key(fileHashes).toStdString() << "\n" << "Result: No threat detected" << std::endl;
         }
     }
 

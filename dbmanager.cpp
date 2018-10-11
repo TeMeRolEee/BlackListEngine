@@ -25,22 +25,8 @@ bool DBManager::findHashesInDB(const QStringList &hashes) {
 bool DBManager::findHashInDB(const QString &hash) {
     QSqlQuery qSqlQuery;
 
-    switch (hash.size()) {
-        case 32:
-            qSqlQuery.prepare("SELECT MD5 FROM hashTable WHERE MD5 = (:MD5)");
-            qSqlQuery.bindValue(":MD5", hash);
-            break;
-        case 40:
-            qSqlQuery.prepare("SELECT SHA1 FROM hashTable WHERE SHA1 = (:SHA1)");
-            qSqlQuery.bindValue(":SHA1", hash);
-            break;
-        case 64:
-            qSqlQuery.prepare("SELECT SHA256 FROM hashTable WHERE SHA256 = (:SHA256)");
-            qSqlQuery.bindValue(":SHA256", hash);
-            break;
-        default:
-            return false;
-    }
+    qSqlQuery.prepare("SELECT * FROM hashTable WHERE MD5 = (:HASH) OR SHA1 = (:HASH) OR SHA256 = (:HASH)");
+    qSqlQuery.bindValue(":HASH", hash);
 
     return qSqlQuery.exec() && qSqlQuery.next();
 }
