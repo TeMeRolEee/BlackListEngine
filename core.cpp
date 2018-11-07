@@ -5,6 +5,7 @@
 #include <QtCore/QFileInfo>
 
 #include "core.h"
+#include "jsonprinter.h"
 
 Core::Core() {
     engine = new Engine;
@@ -63,42 +64,49 @@ int Core::folderScanner(const QString &directoryPath) {
 }
 
 int Core::lookUp(const QString &inputHash) {
-    QJsonObject jsonHash = QJsonObject();
+    auto *printer = new JsonPrinter();
 
     if (inputHash.isEmpty()) {
         return 1;
     }
 
     if (dbManager->findHashInDB(inputHash)) {
-        jsonHash.insert(inputHash, "Blocked");
+
+        QStringList tempList = dbManager->getHashes(inputHash);
+        printer->addResultLookup(inputHash, 1, "Blocked", tempList);
     } else {
-        jsonHash.insert(inputHash, "No threat detected");
+        QStringList tempList;
+        tempList.push_back("");
+        tempList.push_back("");
+        tempList.push_back("");
+
+        printer->addResultLookup(inputHash, 0, "No threat detected", tempList);
     }
 
-    QJsonDocument jsonDocument(jsonHash);
+    printer->printResult();
 
-    std::cout << jsonDocument.toJson().toStdString();
 
     return 0;
 }
 
 int Core::scanFile(const QString &filepath) {
     QStringList hashes = engine->hashFile(filepath);
-    QJsonObject jsonHash = QJsonObject();
+
+    auto *printer = new JsonPrinter();
 
     if (hashes.isEmpty()) {
         return 1;
     }
 
     if (dbManager->findHashesInDB(hashes)) {
-        jsonHash.insert(filepath, "Blocked");
+        printer->addResultScan(filepath, 1, "Blocked");
     } else {
-        jsonHash.insert(filepath, "No threat detected");
+        printer->addResultScan(filepath, 0, "No threat detected");
     }
 
-    QJsonDocument jsonDocument(jsonHash);
+    printer->printResult();
 
-    std::cout << jsonDocument.toJson().toStdString();
+    delete printer;
 
     return 0;
 }

@@ -30,3 +30,26 @@ bool DBManager::findHashInDB(const QString &hash) {
 
     return qSqlQuery.exec() && qSqlQuery.next();
 }
+
+QStringList DBManager::getHashes(const QString &hash) {
+    QSqlQuery qSqlQuery;
+    QStringList hashList;
+
+    qSqlQuery.prepare("SELECT * FROM hashTable WHERE MD5 = (:HASH) OR SHA1 = (:HASH) OR SHA256 = (:HASH)");
+    qSqlQuery.bindValue(":HASH", hash);
+
+    if (qSqlQuery.exec() && qSqlQuery.next()) {
+
+        for (int i = 0; i < 3; i++) {
+            QString currentHash = qSqlQuery.value(i).toString();
+
+            hashList.push_back(currentHash);
+        }
+    }
+
+    if (!hashList.isEmpty()) {
+        return hashList;
+    }
+
+    return QStringList();
+}

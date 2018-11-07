@@ -6,6 +6,7 @@ public:
     DBManager(const QString &path);
     bool findHashesInDB(const QStringList &hashes);
     bool findHashInDB(const QString &hash);
+    QStringList getHashes(const QString &hash);
 
 private:
     QSqlDatabase qSqlDatabase;
