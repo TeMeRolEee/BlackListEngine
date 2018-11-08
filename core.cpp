@@ -9,7 +9,6 @@
 
 Core::Core() {
     engine = new Engine;
-    utils = new Utils;
     QString dbPath;
     dbPath.append(QDir::currentPath()).append("/hashes.db");
     dbManager = new DBManager(dbPath);
@@ -17,14 +16,14 @@ Core::Core() {
 
 Core::~Core() {
     delete engine;
-    delete utils;
     delete dbManager;
 }
 
 int Core::generateHashes(const QString &filePath) {
     QStringList hashes = engine->hashFile(filePath);
     if (!hashes.isEmpty()) {
-        utils->printHashes(hashes);
+        auto *printer = new JsonPrinter();
+        printer->printHashes(hashes);
         return 0;
     }
     return 1;
@@ -33,6 +32,8 @@ int Core::generateHashes(const QString &filePath) {
 int Core::folderScanner(const QString &directoryPath) {
     QDirIterator directoryIterator(directoryPath);
     QMap<QString, QStringList> hashesArray;
+
+    auto *printer = new JsonPrinter();
 
     QJsonObject jsonHash = QJsonObject();
 
@@ -48,17 +49,15 @@ int Core::folderScanner(const QString &directoryPath) {
         }
     }
 
-    for (const auto &fileHashes : hashesArray) {
-        if (!fileHashes.isEmpty() && dbManager->findHashesInDB(fileHashes)) {
-            jsonHash.insert(hashesArray.key(fileHashes), "Blocked");
+    for (const auto &fileHashes : hashesArray.keys()) {
+        if (!fileHashes.isEmpty() && dbManager->findHashesInDB(hashesArray.value(fileHashes))) {
+            printer->addScanResult(fileHashes, 1, "Blocked");
         } else {
-            jsonHash.insert(hashesArray.key(fileHashes), "No threat detected");
+            printer->addScanResult(fileHashes, 0, "No threat detected");
         }
     }
 
-    QJsonDocument jsonDocument(jsonHash);
-
-    std::cout << jsonDocument.toJson().toStdString();
+    printer->printResult();
 
     return 0;
 }
@@ -73,14 +72,14 @@ int Core::lookUp(const QString &inputHash) {
     if (dbManager->findHashInDB(inputHash)) {
 
         QStringList tempList = dbManager->getHashes(inputHash);
-        printer->addResultLookup(inputHash, 1, "Blocked", tempList);
+        printer->addLookupResult(inputHash, 1, "Blocked", tempList);
     } else {
         QStringList tempList;
         tempList.push_back("");
         tempList.push_back("");
         tempList.push_back("");
 
-        printer->addResultLookup(inputHash, 0, "No threat detected", tempList);
+        printer->addLookupResult(inputHash, 0, "No threat detected", tempList);
     }
 
     printer->printResult();
@@ -99,9 +98,9 @@ int Core::scanFile(const QString &filepath) {
     }
 
     if (dbManager->findHashesInDB(hashes)) {
-        printer->addResultScan(filepath, 1, "Blocked");
+        printer->addScanResult(filepath, 1, "Blocked");
     } else {
-        printer->addResultScan(filepath, 0, "No threat detected");
+        printer->addScanResult(filepath, 0, "No threat detected");
     }
 
     printer->printResult();

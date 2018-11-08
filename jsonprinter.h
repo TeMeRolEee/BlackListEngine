@@ -6,15 +6,20 @@
 class JsonPrinter {
 public:
 	JsonPrinter();
-	~JsonPrinter();
-	void addResultScan(const QString &filename, int result, const QString &description);
 
-	void addResultLookup(const QString &hash, int result, const QString &description, const QStringList &hashes);
+	~JsonPrinter();
+
+	void addScanResult(const QString &filename, int result, const QString &description);
+
+	void addLookupResult(const QString &hash, int result, const QString &description, const QStringList &hashes);
+
+    void printHashes(const QStringList &hashes);
 
 	void printResult();
 
 private:
 	QJsonObject *jsonObject;
+    QJsonArray *jsonArray;
 };
 
 

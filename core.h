@@ -2,9 +2,8 @@
 
 #include <QtCore/QStringList>
 
-
 #include "engine.h"
-#include "utils.h"
+
 #include "dbmanager.h"
 
 class Core {
@@ -23,7 +22,6 @@ public:
 
 private:
     Engine *engine;
-    Utils *utils;
     DBManager *dbManager;
 };
 
